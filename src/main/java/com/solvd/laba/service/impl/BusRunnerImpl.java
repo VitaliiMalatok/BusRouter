@@ -21,7 +21,7 @@ public class BusRunnerImpl implements IBusRunner {
         //List<Station> stations = stationDAO.getAll();
         //LOGGER.info(stations);
         //getAllDataFromUser(stations.size()-1);
-
+        findShortestRoute();
     }
 
     public static int userInputIndex(int max) {
@@ -46,5 +46,14 @@ public class BusRunnerImpl implements IBusRunner {
         int finishID = userInputIndex(max);
         //stationFinish = stationDAO.getEntityById(finishID);
         //LOGGER.info("Your FINISH bus stop name: " + stationFinish.getName() + ".");
+    }
+
+    public static void findShortestRoute(){
+        /*Graph graph = new Graph();
+        Graph.calculateShortestPathFromSource(graph, stationStart);
+        stationFinish.getShortestPath().add(stationFinish);
+        List<Station> stationsResult = stationFinish.getShortestPath();
+        BusService service = new BusService();
+        service.getRouteInstructions(stationsResult);*/
     }
 }
