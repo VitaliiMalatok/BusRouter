@@ -1,0 +1,74 @@
+package com.solvd.laba.service.logic;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class BusService {
+    public void getRouteInstructions(List<Station> stations) {
+        System.out.println("Get to Station " + stations.get(0).getName() + " in city " + stations.get(0).getCity());
+        int stationIndex = 0;
+        for (int i = 0; i < stations.size(); i++) {
+            i = stationIndex;
+            Station station = stations.get(i);
+            List<Bus> buses = station.getBuses();
+            //System.out.println(station.getBuses());
+            int weight = 0;
+            String busName = null;
+            //System.out.println("");
+            //System.out.println("CURRENT STATION NAME " + station.getName());
+            for (Bus bus : buses) {
+                int currentW = 0;
+                String currentBusName = bus.getName();
+                List<Station> nextStations = stations.subList(stationIndex + 1, stations.size());
+
+
+                //System.out.println("NEXT STATIONS");
+                //System.out.println(nextStations);
+                //System.out.println("CURRENT BUS NAME");
+                //System.out.println(currentBusName);
+                for (Station nextStation : nextStations) {
+                    //boolean isExists = false;
+                    // Проверяет, если есть автобус на следующей станции
+                    //System.out.println("NEXT STATION NAME " + nextStation.getName());
+                    //System.out.println("NEXT STATION BUSES " + nextStation.getBuses());
+                    Set<String> busesNames = new HashSet<>();
+                    for (Bus b : nextStation.getBuses()) {
+                        busesNames.add(b.getName());
+//                        if (b.getName() == currentBusName) {
+//                            //isExists = true;
+//                            currentW++;
+//                        }
+//                        else {
+//                            break;
+//                        }
+                    }
+                    if (busesNames.contains(currentBusName)) {
+                        currentW++;
+                    } else {
+                        break;
+                    }
+                }
+                if (currentW > weight) {
+                    weight = currentW;
+                    busName = currentBusName;
+                    stationIndex = weight + stationIndex;
+                    //System.out.println("STATION INDEX " + stationIndex);
+                    System.out.println("User should pick bus with name " + busName + " from Station " + station.getName() + " to Station " + stations.get(stationIndex).getName() + " in City " + stations.get(stationIndex).getCity());
+                    //System.out.println("CurW " + currentW);
+                    //System.out.println("Weight " + weight);
+                    //System.out.println("Index " + stationIndex);
+                    if (stationIndex == stations.size() - 1) {
+                        return;
+                    }
+                }
+                //System.out.println("");
+                //System.out.println("User should pick bus with name " + busName+ " from Station " + station.getName() + " to Station " + stations.get(stationIndex-1).getName());
+
+            }
+
+        }
+        return;
+    }
+}
+

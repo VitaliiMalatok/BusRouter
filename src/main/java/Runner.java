@@ -1,8 +1,8 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.com.solvd.laba.service.IBusRunner;
-import java.com.solvd.laba.service.impl.BusRunnerImpl;
+import com.solvd.laba.service.IBusRunner;
+import com.solvd.laba.service.impl.BusRunnerImpl;
 
 
 public class Runner {
