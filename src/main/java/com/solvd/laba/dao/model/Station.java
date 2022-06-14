@@ -1,4 +1,4 @@
-package dao.model;
+package com.solvd.laba.dao.model;
 
 import java.util.List;
 
@@ -72,13 +72,12 @@ public class Station {
 
     @Override
     public String toString() {
-        return "Station{" +
-                "id=" + id +
+        return "Station " + "#" + id +
                 ", name='" + name + '\'' +
                 ", city='" + city + '\'' +
-                ", latitude=" + latitude +
+                ", all available buses=" + buses +
+                ". Station coordinates: latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", buses=" + buses +
-                '}';
+                '.';
     }
 }

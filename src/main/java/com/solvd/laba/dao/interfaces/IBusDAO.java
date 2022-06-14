@@ -1,6 +1,7 @@
-package dao.interfaces;
+package com.solvd.laba.dao.interfaces;
 
-import dao.model.Bus;
+
+import com.solvd.laba.dao.model.Bus;
 
 import java.util.List;
 

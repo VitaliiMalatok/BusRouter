@@ -1,8 +1,8 @@
-package dao.jdbc;
+package com.solvd.laba.dao.impl;
 
-import dao.ConnectionPool;
-import dao.interfaces.IBusDAO;
-import dao.model.Bus;
+import com.solvd.laba.dao.connection.ConnectionPool;
+import com.solvd.laba.dao.interfaces.IBusDAO;
+import com.solvd.laba.dao.model.Bus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusDAO  implements IBusDAO {
+public class BusDAO implements IBusDAO {
 
     public static final String SQL_SELECT_ALL_BUSES = "select * from buses ";
     public static final String SQL_SELECT_BY_ID = "select * from buses where id=?";
@@ -29,40 +29,40 @@ public class BusDAO  implements IBusDAO {
     private PreparedStatement pr = null;
     private ResultSet resultSet = null;
 
-       @Override
-        public List<Bus> getAllBusesByStationId(int id) {
-            List<Bus> buses = new ArrayList<>();
-            Connection connection = null;
-            PreparedStatement statement = null;
-            ResultSet resultSet = null;
+    @Override
+    public List<Bus> getAllBusesByStationId(int id) {
+        List<Bus> buses = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SQL_GET_ALL_BUSES_BY_STATION_ID);
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Bus bus = new Bus();
+                bus.setId(resultSet.getInt("id"));
+                bus.setNumber(resultSet.getString("number"));
+                buses.add(bus);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
             try {
-                connection = ConnectionPool.getInstance().getConnection();
-                statement = connection.prepareStatement(SQL_GET_ALL_BUSES_BY_STATION_ID );
-                statement.setInt(1, id);
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    Bus bus = new Bus();
-                    bus.setId(resultSet.getInt("id"));
-                    bus.setNumber(resultSet.getString("number"));
-                    buses.add(bus);
-                }
+                statement.close();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
-            } finally {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                ConnectionPool.getInstance().releaseConnection(connection);
             }
-            return buses;
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
+        return buses;
+    }
 
 
     @Override
@@ -162,7 +162,7 @@ public class BusDAO  implements IBusDAO {
             pr.execute();
             resultSet = pr.getResultSet();
             while (resultSet.next()) {
-                Bus Bus= new Bus();
+                Bus Bus = new Bus();
                 Bus.setId(resultSet.getInt("id"));
                 Bus.setNumber(resultSet.getString("number"));
                 Buses.add(Bus);

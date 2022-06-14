@@ -1,8 +1,8 @@
-package dao.jdbc;
+package com.solvd.laba.dao.impl;
 
-import dao.ConnectionPool;
-import dao.interfaces.IRouteDAO;
-import dao.model.Route;
+import com.solvd.laba.dao.connection.ConnectionPool;
+import com.solvd.laba.dao.interfaces.IRouteDAO;
+import com.solvd.laba.dao.model.Route;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouteDAO  implements IRouteDAO {
+public class RouteDAO implements IRouteDAO {
 
     private static final Logger LOGGER = LogManager.getLogger(RouteDAO.class);
     private Route c = new Route();
@@ -145,7 +145,7 @@ public class RouteDAO  implements IRouteDAO {
             pr.execute();
             resultSet = pr.getResultSet();
             while (resultSet.next()) {
-                Route Route= new Route();
+                Route Route = new Route();
                 Route.setId(resultSet.getInt("id"));
                 Route.setDistance(resultSet.getDouble("distance"));
                 Routes.add(Route);

@@ -1,10 +1,10 @@
-package dao.jdbc;
+package com.solvd.laba.dao.impl;
 
 
-import dao.ConnectionPool;
-import dao.interfaces.IStationDAO;
-import dao.model.Bus;
-import dao.model.Station;
+import com.solvd.laba.dao.connection.ConnectionPool;
+import com.solvd.laba.dao.interfaces.IStationDAO;
+import com.solvd.laba.dao.model.Bus;
+import com.solvd.laba.dao.model.Station;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,6 +1,8 @@
-package dao.interfaces;
+package com.solvd.laba.dao.interfaces;
 
-import dao.model.Station;
+
+import com.solvd.laba.dao.model.Station;
+
 import java.util.List;
 
 public interface IStationDAO extends IBaseDAO<Station> {

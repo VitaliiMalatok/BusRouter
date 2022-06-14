@@ -1,17 +1,15 @@
-package dao.services;
+package com.solvd.laba.dao.services;
 
-import dao.jdbc.BusDAO;
-import dao.jdbc.StationDAO;
-import dao.model.Bus;
-import dao.model.Station;
 
-import java.util.List;
+import com.solvd.laba.dao.impl.BusDAO;
+import com.solvd.laba.dao.impl.StationDAO;
+import com.solvd.laba.dao.model.Station;
 
 public class StationService {
     public Station getStationById(int id) {
 
         StationDAO stationDAO = new StationDAO();
-        Station station = new Station();
+        Station station;
         station = stationDAO.getEntityById(id);
         BusDAO busDAO = new BusDAO();
         station.setBuses(busDAO.getAllBusesByStationId(id));

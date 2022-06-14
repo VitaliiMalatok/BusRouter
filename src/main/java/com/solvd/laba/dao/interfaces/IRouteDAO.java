@@ -1,9 +1,10 @@
-package dao.interfaces;
+package com.solvd.laba.dao.interfaces;
 
-import dao.model.Route;
-import java.util.*;
+import com.solvd.laba.dao.model.Route;
 
-public interface IRouteDAO extends IBaseDAO<Route>{
+import java.util.List;
+
+public interface IRouteDAO extends IBaseDAO<Route> {
     void showAllRoutes();
 
     void removeEntity(int id);

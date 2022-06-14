@@ -1,4 +1,4 @@
-package dao.model;
+package com.solvd.laba.dao.model;
 
 public class Bus {
 
@@ -30,9 +30,7 @@ public class Bus {
 
     @Override
     public String toString() {
-        return "Bus{" +
-                "number='" + number + '\'' +
-                '}';
+        return "Bus " + "#" + number;
     }
 
 }

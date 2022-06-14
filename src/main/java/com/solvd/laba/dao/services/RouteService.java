@@ -1,24 +1,21 @@
-package dao.services;
+package com.solvd.laba.dao.services;
 
-import dao.jdbc.RouteDAO;
-import dao.jdbc.StationDAO;
-import dao.model.Route;
-import dao.model.Station;
+import com.solvd.laba.dao.impl.RouteDAO;
+import com.solvd.laba.dao.impl.StationDAO;
+import com.solvd.laba.dao.model.Route;
+import com.solvd.laba.dao.model.Station;
 
 public class RouteService {
-    public Route getRouteById(int id){
+    public Route getRouteById(int id) {
 
-    Route route = new Route();
-    RouteDAO routeDAO = new RouteDAO();
-    StationDAO stationDAO = new StationDAO();
-    route = routeDAO.getEntityById(id);
-    Station stationStart = stationDAO.getStationStartByRouteId(id);
-    Station stationFinish = stationDAO.getStationFinishByRouteId(id);
-    route.setStationStart(stationStart);
-    route.setStationFinish(stationFinish);
-    route.setDistance(Route.calcDistance(stationStart,stationFinish));
-    return route;
-
+        RouteDAO routeDAO = new RouteDAO();
+        StationDAO stationDAO = new StationDAO();
+        Route route = routeDAO.getEntityById(id);
+        Station stationStart = stationDAO.getStationStartByRouteId(id);
+        Station stationFinish = stationDAO.getStationFinishByRouteId(id);
+        route.setStationStart(stationStart);
+        route.setStationFinish(stationFinish);
+        route.setDistance(Route.calcDistance(stationStart, stationFinish));
+        return route;
     }
-
 }
