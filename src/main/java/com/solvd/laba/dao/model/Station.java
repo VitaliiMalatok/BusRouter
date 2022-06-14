@@ -58,7 +58,7 @@ public class Station {
     public Station(){
     }
 
-    public Station (String name, String city, double latitude, double longitude, List<Bus> buses) {
+    public Station(String name, String city, double latitude, double longitude, List<Bus> buses) {
         this.name = name;
         this.city = city;
         this.latitude = latitude;
