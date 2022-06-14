@@ -15,11 +15,8 @@ import java.util.List;
 
 public class BusDAO implements IBusDAO {
 
-    public static final String SQL_SELECT_ALL_BUSES = "select * from buses ";
     public static final String SQL_SELECT_BY_ID = "select * from buses where id=?";
-    public static final String SQL_DELETE_BY_ID = "DELETE FROM sat.stocks WHERE id = ?";
-    public static final String SQL_CREATE_NEW_BUS = "insert into Buses number";
-    public static final String SQL_SELECT_TYPES_OF_TRANSPORT_BY_STOCK_ID = "";
+    public static final String SQL_CREATE_NEW_BUS = "insert into buses number";
     public static final String SQL_GET_ALL_BUSES_BY_STATION_ID = "SELECT buses.id, buses.number FROM buses INNER JOIN stations_have_buses ON " +
             "buses.id = stations_have_buses.buses_id INNER JOIN stations ON stations.id = stations_have_buses.stations_id WHERE stations.id IN (?)";
 
@@ -47,17 +44,17 @@ public class BusDAO implements IBusDAO {
                 buses.add(bus);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.error(e.getMessage());
         } finally {
             try {
                 statement.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                LOGGER.error(e.getMessage());
             }
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                LOGGER.error(e.getMessage());
             }
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -78,14 +75,14 @@ public class BusDAO implements IBusDAO {
                 c.setNumber(resultSet.getString("number"));
             }
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
                 if (resultSet != null) resultSet.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
         return c;
@@ -101,13 +98,13 @@ public class BusDAO implements IBusDAO {
             c.setNumber(resultSet.getString("number"));
             LOGGER.info("A new Bus has been created: " + entity);
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -116,19 +113,19 @@ public class BusDAO implements IBusDAO {
     public void updateEntity(Bus entity) {
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("update Buses set id=?, number=? where id=?");
+            pr = connection.prepareStatement("update Buses set number = ? where id = ?");
             pr.setInt(1, entity.getId());
             pr.setString(2, entity.getNumber());
             pr.executeUpdate();
             LOGGER.info("Data of Bus has been updated.");
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -137,18 +134,18 @@ public class BusDAO implements IBusDAO {
     public void removeEntity(int id) {
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("delete from Buses where id=?");
+            pr = connection.prepareStatement("delete from buses where id=?");
             pr.setInt(1, id);
             pr.executeUpdate();
             LOGGER.info("Bus has been removed.");
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -168,14 +165,14 @@ public class BusDAO implements IBusDAO {
                 Buses.add(Bus);
             }
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
                 if (resultSet != null) resultSet.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
         return Buses;

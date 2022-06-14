@@ -16,6 +16,7 @@ public class RouteService {
         route.setStationStart(stationStart);
         route.setStationFinish(stationFinish);
         route.setDistance(Route.calcDistance(stationStart, stationFinish));
+        routeDAO.updateEntity(route);
         return route;
     }
 }

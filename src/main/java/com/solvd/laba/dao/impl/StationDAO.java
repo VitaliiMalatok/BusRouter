@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StationDAO  implements IStationDAO {
+public class StationDAO implements IStationDAO {
 
     private static final String GET_STATION_START_BY_ROUTE_ID = "SELECT stations.* FROM stations " +
             "inner join routes on routes.station_id1 = stations.id where routes.id = (?)";
@@ -45,14 +45,14 @@ public class StationDAO  implements IStationDAO {
                 c.setLongitude(resultSet.getDouble("longitude"));
             }
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
                 if (resultSet != null) resultSet.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -76,17 +76,17 @@ public class StationDAO  implements IStationDAO {
                 station.setLongitude(resultSet.getDouble("longitude"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.error(e.getMessage());
         } finally {
             try {
                 statement.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                LOGGER.error(e.getMessage());
             }
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                LOGGER.error(e.getMessage());
             }
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -112,17 +112,17 @@ public class StationDAO  implements IStationDAO {
                 station.setLongitude(resultSet.getDouble("longitude"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.error(e.getMessage());
         } finally {
             try {
                 statement.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                LOGGER.error(e.getMessage());
             }
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                LOGGER.error(e.getMessage());
             }
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -145,14 +145,14 @@ public class StationDAO  implements IStationDAO {
                 c.setLongitude(resultSet.getDouble("longitude"));
             }
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
                 if (resultSet != null) resultSet.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
         return c;
@@ -163,12 +163,12 @@ public class StationDAO  implements IStationDAO {
     public void createEntity(Station entity) {
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("insert into Stations (StationStart,StationFinish) values (?,?)");
-            c.setId(resultSet.getInt("id"));
-            c.setName(resultSet.getString("name"));
-            c.setCity(resultSet.getString("city"));
-            c.setLatitude(resultSet.getDouble("latitude"));
-            c.setLongitude(resultSet.getDouble("longitude"));
+            pr = connection.prepareStatement("insert into stations (name, latitude, longitude, city) values (?,?,?,?)");
+            pr.setString(1, entity.getName());
+            pr.setDouble(2, entity.getLatitude());
+            pr.setDouble(3, entity.getLongitude());
+            pr.setString(4, entity.getCity());
+            pr.executeUpdate();
             LOGGER.info("A new Station has been created: " + entity);
         } catch (SQLException e) {
             LOGGER.info(e);
@@ -235,7 +235,7 @@ public class StationDAO  implements IStationDAO {
             pr.execute();
             resultSet = pr.getResultSet();
             while (resultSet.next()) {
-                Station Station= new Station();
+                Station Station = new Station();
                 Station.setId(resultSet.getInt("id"));
                 Station.setCity(resultSet.getString("city"));
                 Station.setName(resultSet.getString("name"));
