@@ -9,8 +9,7 @@ public class StationService {
     public Station getStationById(int id) {
 
         StationDAO stationDAO = new StationDAO();
-        Station station;
-        station = stationDAO.getEntityById(id);
+        Station station = stationDAO.getEntityById(id);
         BusDAO busDAO = new BusDAO();
         station.setBuses(busDAO.getAllBusesByStationId(id));
         return station;

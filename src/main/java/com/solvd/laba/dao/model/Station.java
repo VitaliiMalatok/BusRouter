@@ -1,6 +1,9 @@
 package com.solvd.laba.dao.model;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Station {
 
@@ -10,6 +13,47 @@ public class Station {
     private double latitude;
     private double longitude;
     private List<Bus> buses;
+
+    private Bus bus = null;
+    private List<Station> shortestPath = new LinkedList<>();
+    private Double distance = Double.MAX_VALUE;
+    Map<Station, Double> adjacentNodes = new HashMap<>();
+
+    public Bus getBus() {
+        return bus;
+    }
+
+    public void setBus(Bus bus) {
+        this.bus = bus;
+    }
+
+    public List<Station> getShortestPath() {
+        return shortestPath;
+    }
+
+    public void setShortestPath(List<Station> shortestPath) {
+        this.shortestPath = shortestPath;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+    public Map<Station, Double> getAdjacentNodes() {
+        return adjacentNodes;
+    }
+
+    public void setAdjacentNodes(Map<Station, Double> adjacentNodes) {
+        this.adjacentNodes = adjacentNodes;
+    }
+
+    public void addDestination(Station destination, double distance) {
+        adjacentNodes.put(destination, distance);
+    }
 
     public Station(){
     }
@@ -75,9 +119,7 @@ public class Station {
         return "Station " + "#" + id +
                 ", name='" + name + '\'' +
                 ", city='" + city + '\'' +
-                ", all available buses=" + buses +
-                ". Station coordinates: latitude=" + latitude +
-                ", longitude=" + longitude +
+                ", buses=" + buses +
                 '.';
     }
 }

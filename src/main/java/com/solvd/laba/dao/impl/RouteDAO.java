@@ -35,14 +35,14 @@ public class RouteDAO implements IRouteDAO {
                 LOGGER.info(c);
             }
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
                 if (resultSet != null) resultSet.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -60,14 +60,14 @@ public class RouteDAO implements IRouteDAO {
                 c.setDistance(resultSet.getDouble("distance"));
             }
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
                 if (resultSet != null) resultSet.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
         return c;
@@ -78,17 +78,20 @@ public class RouteDAO implements IRouteDAO {
     public void createEntity(Route entity) {
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("insert into Routes (StationStart,StationFinish) values (?,?)");
-            c.setDistance(resultSet.getDouble("distance"));
+            pr = connection.prepareStatement("insert into Routes (distance, station_id1, station_id2) values (?,?,?)");
+            pr.setDouble(1, entity.getDistance());
+            pr.setInt(2, entity.getStationStart().getId());
+            pr.setInt(3, entity.getStationFinish().getId());
+            pr.executeUpdate();
             LOGGER.info("A new Route has been created: " + entity);
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -97,21 +100,20 @@ public class RouteDAO implements IRouteDAO {
     public void updateEntity(Route entity) {
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("update Routes set id=?,distance=?,StationFinish=? where id=?");
-            pr.setInt(1, entity.getId());
-            pr.setDouble(2, entity.getDistance());
+            pr = connection.prepareStatement("update routes set distance = ?, station_id1 = ?, station_id2 = ? where id = ?");
+            pr.setDouble(1, entity.getDistance());
+            pr.setInt(2, entity.getStationStart().getId());
             pr.setInt(3, entity.getStationFinish().getId());
-            pr.setInt(4, entity.getStationStart().getId());
+            pr.setInt(4, entity.getId());
             pr.executeUpdate();
-            LOGGER.info("Data of route has been updated.");
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -125,13 +127,13 @@ public class RouteDAO implements IRouteDAO {
             pr.executeUpdate();
             LOGGER.info("route has been removed.");
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -145,20 +147,20 @@ public class RouteDAO implements IRouteDAO {
             pr.execute();
             resultSet = pr.getResultSet();
             while (resultSet.next()) {
-                Route Route = new Route();
-                Route.setId(resultSet.getInt("id"));
-                Route.setDistance(resultSet.getDouble("distance"));
-                Routes.add(Route);
+                Route route = new Route();
+                route.setId(resultSet.getInt("id"));
+                route.setDistance(resultSet.getDouble("distance"));
+                Routes.add(route);
             }
         } catch (SQLException e) {
-            LOGGER.info(e);
+            LOGGER.error(e.getMessage());
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
             try {
                 if (pr != null) pr.close();
                 if (resultSet != null) resultSet.close();
             } catch (SQLException e) {
-                LOGGER.info(e);
+                LOGGER.error(e.getMessage());
             }
         }
         return Routes;
