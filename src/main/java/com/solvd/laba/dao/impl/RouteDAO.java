@@ -1,6 +1,6 @@
 package com.solvd.laba.dao.impl;
 
-import com.solvd.laba.dao.connection.ConnectionPool;
+import com.solvd.laba.dao.connection.MyConnectionPool;
 import com.solvd.laba.dao.interfaces.IRouteDAO;
 import com.solvd.laba.dao.model.Route;
 import org.apache.logging.log4j.LogManager;
@@ -15,81 +15,77 @@ import java.util.List;
 
 public class RouteDAO implements IRouteDAO {
 
+    private MyConnectionPool pool = MyConnectionPool.getInstance();
+
     private static final Logger LOGGER = LogManager.getLogger(RouteDAO.class);
-    private Route c = new Route();
-    private Connection connection = null;
-    private PreparedStatement pr = null;
-    private ResultSet resultSet = null;
 
     @Override
     public void showAllRoutes() {
-
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("select * from Routes ");
+        Connection connection = pool.getConnection();
+        String query = "SELECT * FROM routes";
+        try (PreparedStatement pr = connection.prepareStatement(query)) {
             pr.execute();
-            resultSet = pr.getResultSet();
-            while (resultSet.next()) {
-                c.setId(resultSet.getInt("id"));
-                c.setDistance(resultSet.getDouble("distance"));
-                LOGGER.info(c);
+            try (ResultSet rs = pr.getResultSet()) {
+                while (rs.next()) {
+                    Route route = new Route();
+                    route.setId(rs.getInt("id"));
+                    route.setDistance(rs.getDouble("distance"));
+                    LOGGER.info(route);
+                }
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-            try {
-                if (pr != null) pr.close();
-                if (resultSet != null) resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.error(e.getMessage());
+            if (connection != null) {
+                try {
+                    pool.releaseConnection(connection);
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
             }
         }
     }
 
     @Override
     public Route getEntityById(int id) {
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("select * from Routes where id=?");
+        Connection connection = pool.getConnection();
+        Route route = new Route();
+        String query = "SELECT * FROM routes WHERE id = (?)";
+        try (PreparedStatement pr = connection.prepareStatement(query)) {
             pr.setInt(1, id);
             pr.execute();
-            resultSet = pr.getResultSet();
-            while (resultSet.next()) {
-                c.setId(resultSet.getInt("id"));
-                c.setDistance(resultSet.getDouble("distance"));
+            try (ResultSet rs = pr.getResultSet()) {
+                while (rs.next()) {
+                    route.setId(rs.getInt("id"));
+                    route.setDistance(rs.getDouble("distance"));
+                }
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
             try {
-                if (pr != null) pr.close();
-                if (resultSet != null) resultSet.close();
+                if (connection != null) pool.releaseConnection(connection);
             } catch (SQLException e) {
                 LOGGER.error(e.getMessage());
             }
         }
-        return c;
-
+        return route;
     }
 
     @Override
     public void createEntity(Route entity) {
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("insert into Routes (distance, station_id1, station_id2) values (?,?,?)");
+        Connection connection = pool.getConnection();
+        String query = "insert into routes (distance, station_id1, station_id2) values (?,?,?)";
+        try (PreparedStatement pr = connection.prepareStatement(query)) {
             pr.setDouble(1, entity.getDistance());
             pr.setInt(2, entity.getStationStart().getId());
             pr.setInt(3, entity.getStationFinish().getId());
             pr.executeUpdate();
-            LOGGER.info("A new Route has been created: " + entity);
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
             try {
-                if (pr != null) pr.close();
+                if (connection != null) pool.releaseConnection(connection);
             } catch (SQLException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -98,9 +94,9 @@ public class RouteDAO implements IRouteDAO {
 
     @Override
     public void updateEntity(Route entity) {
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("update routes set distance = ?, station_id1 = ?, station_id2 = ? where id = ?");
+        Connection connection = pool.getConnection();
+        String query = "update routes set distance = ?, station_id1 = ?, station_id2 = ? where id = ?";
+        try (PreparedStatement pr = connection.prepareStatement(query)) {
             pr.setDouble(1, entity.getDistance());
             pr.setInt(2, entity.getStationStart().getId());
             pr.setInt(3, entity.getStationFinish().getId());
@@ -109,9 +105,8 @@ public class RouteDAO implements IRouteDAO {
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
             try {
-                if (pr != null) pr.close();
+                if (connection != null) pool.releaseConnection(connection);
             } catch (SQLException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -120,18 +115,16 @@ public class RouteDAO implements IRouteDAO {
 
     @Override
     public void removeEntity(int id) {
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("delete from routes where id=?");
+        Connection connection = pool.getConnection();
+        String query = "delete from routes where id=?";
+        try (PreparedStatement pr = connection.prepareStatement(query)) {
             pr.setInt(1, id);
             pr.executeUpdate();
-            LOGGER.info("route has been removed.");
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
             try {
-                if (pr != null) pr.close();
+                if (connection != null) pool.releaseConnection(connection);
             } catch (SQLException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -140,30 +133,31 @@ public class RouteDAO implements IRouteDAO {
 
     @Override
     public List<Route> getAllRoutes() {
-        List<Route> Routes = new ArrayList<>();
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            pr = connection.prepareStatement("select * from routes ");
+        Connection connection = pool.getConnection();
+        List<Route> routes = new ArrayList<>();
+        String query = "select * from routes";
+        try (PreparedStatement pr = connection.prepareStatement(query)) {
             pr.execute();
-            resultSet = pr.getResultSet();
-            while (resultSet.next()) {
-                Route route = new Route();
-                route.setId(resultSet.getInt("id"));
-                route.setDistance(resultSet.getDouble("distance"));
-                Routes.add(route);
+            try (ResultSet rs = pr.getResultSet()) {
+                while (rs.next()) {
+                    Route route = new Route();
+                    route.setId(rs.getInt("id"));
+                    route.setDistance(rs.getDouble("distance"));
+                    routes.add(route);
+                }
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-            try {
-                if (pr != null) pr.close();
-                if (resultSet != null) resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.error(e.getMessage());
+            if(connection != null) {
+                try {
+                    pool.releaseConnection(connection);
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
             }
         }
-        return Routes;
+        return routes;
     }
 
 }

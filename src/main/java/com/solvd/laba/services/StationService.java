@@ -1,4 +1,4 @@
-package com.solvd.laba.dao.services;
+package com.solvd.laba.services;
 
 
 import com.solvd.laba.dao.impl.BusDAO;

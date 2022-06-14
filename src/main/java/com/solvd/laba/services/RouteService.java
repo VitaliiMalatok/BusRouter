@@ -1,4 +1,4 @@
-package com.solvd.laba.dao.services;
+package com.solvd.laba.services;
 
 import com.solvd.laba.dao.impl.RouteDAO;
 import com.solvd.laba.dao.impl.StationDAO;
@@ -37,7 +37,7 @@ public class RouteService {
             List<Bus> buses = station.getBuses();
             System.out.println(station.getBuses());
             int weight = 0;
-            String busName = null;
+            String busName;
             //System.out.println("");
             //System.out.println("CURRENT STATION NAME " + station.getName());
             for (Bus bus : buses) {
@@ -91,6 +91,5 @@ public class RouteService {
             }
 
         }
-        return;
     }
 }
