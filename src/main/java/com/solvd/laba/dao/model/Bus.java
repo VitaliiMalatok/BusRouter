@@ -1,7 +1,13 @@
 package com.solvd.laba.dao.model;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Bus {
 
+    @XmlAttribute(name = "id")
     private int id;
     private String number;
 
