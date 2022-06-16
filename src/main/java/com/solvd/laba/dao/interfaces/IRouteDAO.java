@@ -11,4 +11,6 @@ public interface IRouteDAO extends IBaseDAO<Route> {
 
     List<Route> getAllRoutes();
 
+    List<Route> getAllNeighborsById(int id);
+
 }
