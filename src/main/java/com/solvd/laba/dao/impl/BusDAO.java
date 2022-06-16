@@ -1,6 +1,6 @@
 package com.solvd.laba.dao.impl;
 
-import com.solvd.laba.dao.connection.MyConnectionPool;
+import com.solvd.laba.dao.connection.ConnectionPool;
 import com.solvd.laba.dao.interfaces.IBusDAO;
 import com.solvd.laba.dao.model.Bus;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class BusDAO implements IBusDAO {
 
-    private MyConnectionPool pool = MyConnectionPool.getInstance();
+    private ConnectionPool pool = ConnectionPool.getInstance();
 
     public static final String SQL_SELECT_BY_ID = "select * from buses where id=?";
     public static final String SQL_CREATE_NEW_BUS = "insert into buses (id, number) values (?, ?)";

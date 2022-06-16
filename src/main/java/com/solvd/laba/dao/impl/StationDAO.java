@@ -1,6 +1,6 @@
 package com.solvd.laba.dao.impl;
 
-import com.solvd.laba.dao.connection.MyConnectionPool;
+import com.solvd.laba.dao.connection.ConnectionPool;
 import com.solvd.laba.dao.interfaces.IStationDAO;
 import com.solvd.laba.dao.model.Station;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class StationDAO implements IStationDAO {
 
-    private MyConnectionPool pool = MyConnectionPool.getInstance();
+    private ConnectionPool pool = ConnectionPool.getInstance();
 
     private static final String GET_STATION_START_BY_ROUTE_ID = "SELECT stations.* FROM stations " +
             "inner join routes on routes.station_id1 = stations.id where routes.id = (?)";

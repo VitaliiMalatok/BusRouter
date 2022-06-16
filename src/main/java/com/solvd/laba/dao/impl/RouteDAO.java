@@ -1,6 +1,6 @@
 package com.solvd.laba.dao.impl;
 
-import com.solvd.laba.dao.connection.MyConnectionPool;
+import com.solvd.laba.dao.connection.ConnectionPool;
 import com.solvd.laba.dao.interfaces.IRouteDAO;
 import com.solvd.laba.dao.model.Route;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class RouteDAO implements IRouteDAO {
 
-    private MyConnectionPool pool = MyConnectionPool.getInstance();
+    private ConnectionPool pool = ConnectionPool.getInstance();
 
     private static final Logger LOGGER = LogManager.getLogger(RouteDAO.class);
 

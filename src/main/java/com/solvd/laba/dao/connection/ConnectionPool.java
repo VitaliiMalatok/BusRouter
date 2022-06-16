@@ -4,28 +4,27 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 
-public class MyConnectionPool {
+public class ConnectionPool {
 
-    private static final Logger LOGGER = LogManager.getLogger(MyConnectionPool.class);
-    private static MyConnectionPool instance = null;
+    private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
+    private static ConnectionPool instance = null;
     private static final int INITIAL_POOL_SIZE = 15;
 
-    private MyConnectionPool() {
+    private ConnectionPool() {
     }
 
     private static List<Connection> freeConnections = new ArrayList<>();
     private static List<Connection> usedConnections = new ArrayList<>();
 
-    public static synchronized MyConnectionPool getInstance() {
+    public static synchronized ConnectionPool getInstance() {
         if (instance == null) {
-            instance = new MyConnectionPool();
+            instance = new ConnectionPool();
             create();
         }
         return instance;
