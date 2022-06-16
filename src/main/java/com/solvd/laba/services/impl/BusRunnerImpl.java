@@ -2,15 +2,19 @@ package com.solvd.laba.services.impl;
 
 import com.solvd.laba.dao.impl.RouteDAO;
 import com.solvd.laba.dao.impl.StationDAO;
+import com.solvd.laba.dao.model.BuiltRoute;
 import com.solvd.laba.dao.model.Graph;
 import com.solvd.laba.dao.model.Route;
 import com.solvd.laba.dao.model.Station;
 import com.solvd.laba.services.IBusRunner;
 import com.solvd.laba.services.RouteService;
 import com.solvd.laba.services.StationService;
+import com.solvd.laba.utils.FileUtils;
+import com.solvd.laba.utils.ParserUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -47,7 +51,7 @@ public class BusRunnerImpl implements IBusRunner {
         LOGGER.info("Your FINISH bus stop name: " + finish.getName() + ", " + finish.getCity() + ".");
         List<Route> fullRoutes = setDistances(routes);
 
-        //findShortestRoute(fullRoutes, start, finish);
+        findShortestRoute(fullRoutes, start, finish);
     }
 
     public static int userInputIndex(int max) {
@@ -89,6 +93,13 @@ public class BusRunnerImpl implements IBusRunner {
             station = stationService.getStationById(station.getId());
         }*/
 
-        RouteService.getRouteInstructions(stationsResult);
+        BuiltRoute builtRoute = RouteService.getRouteInstructions(stationsResult);
+
+
+        File xmlFile = FileUtils.createDefaultRouteFile(FileUtils.FileType.XML);
+        ParserUtils.writeXml(builtRoute, xmlFile);
+
+        File jsonFile = FileUtils.createDefaultRouteFile(FileUtils.FileType.JSON);
+        ParserUtils.writeJson(builtRoute, jsonFile);
     }
 }

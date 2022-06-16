@@ -2,10 +2,9 @@ package com.solvd.laba.services;
 
 import com.solvd.laba.dao.impl.RouteDAO;
 import com.solvd.laba.dao.impl.StationDAO;
-import com.solvd.laba.dao.model.Bus;
-import com.solvd.laba.dao.model.Route;
-import com.solvd.laba.dao.model.Station;
+import com.solvd.laba.dao.model.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +27,9 @@ public class RouteService {
         return route;
     }
 
-    public static void getRouteInstructions(List<Station> stations) {
+    public static BuiltRoute getRouteInstructions(List<Station> stations) {
+        BuiltRoute result = new BuiltRoute();
+
         System.out.println("Get to Station " + stations.get(0).getName() + " in city " + stations.get(0).getCity());
         int stationIndex = 0;
         for (int i = 0; i < stations.size(); i++) {
@@ -76,13 +77,21 @@ public class RouteService {
                     weight = currentW;
                     busName = currentBusName;
                     stationIndex = weight + stationIndex;
+                    Station toStation = stations.get(stationIndex);
                     //System.out.println("STATION INDEX " + stationIndex);
-                    System.out.println("User should pick bus with name " + busName + " from Station " + station.getName() + " to Station " + stations.get(stationIndex).getName() + " in City " + stations.get(stationIndex).getCity());
+                    System.out.println("User should pick bus with name " + busName + " from Station " + station.getName() + " to Station " + toStation.getName() + " in City " + stations.get(stationIndex).getCity());
+
+                    RouteUnit currentRouteUnit = new RouteUnit(station, toStation, bus);
+
+                    if (result.getRouteUnits() == null) {
+                        result.setRouteUnits(new ArrayList<>());
+                    }
+                    result.getRouteUnits().add(currentRouteUnit);
                     //System.out.println("CurW " + currentW);
                     //System.out.println("Weight " + weight);
                     //System.out.println("Index " + stationIndex);
                     if (stationIndex == stations.size() - 1) {
-                        return;
+                        return null;
                     }
                 }
                 //System.out.println("");
@@ -91,5 +100,6 @@ public class RouteService {
             }
 
         }
+        return result;
     }
 }

@@ -1,12 +1,18 @@
 package com.solvd.laba.dao.model;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Station {
 
+    @XmlAttribute(name = "id")
     private int id;
     private String name;
     private String city;
