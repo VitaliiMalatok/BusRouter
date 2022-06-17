@@ -2,10 +2,7 @@ package com.solvd.laba.services.impl;
 
 import com.solvd.laba.dao.impl.RouteDAO;
 import com.solvd.laba.dao.impl.StationDAO;
-import com.solvd.laba.dao.model.BuiltRoute;
-import com.solvd.laba.dao.model.Graph;
-import com.solvd.laba.dao.model.Route;
-import com.solvd.laba.dao.model.Station;
+import com.solvd.laba.dao.model.*;
 import com.solvd.laba.services.IBusRunner;
 import com.solvd.laba.services.RouteService;
 import com.solvd.laba.services.StationService;
@@ -51,7 +48,7 @@ public class BusRunnerImpl implements IBusRunner {
         LOGGER.info("Your FINISH bus stop name: " + finish.getName() + ", " + finish.getCity() + ".");
         List<Route> fullRoutes = setDistances(routes);
 
-        findShortestRoute(fullRoutes, start, finish);
+        findShortestRoute(startID, finishID);
     }
 
     public static int userInputIndex(int max) {
@@ -76,30 +73,42 @@ public class BusRunnerImpl implements IBusRunner {
         return fullRoutes;
     }
 
-    public static void findShortestRoute(List<Route> routes, Station stationStart, Station stationFinish) {
-        Graph graph = new Graph();
-        for(Route route : routes){
-            route.getStationStart().addDestination(route.getStationFinish(), route.getDistance());
+    public static void findShortestRoute(int start, int finish) {
+
+        NewGraph g = new NewGraph();
+        StationDAO stationDAO = new StationDAO();
+        RouteDAO routeDAO = new RouteDAO();
+        List<Station> stationList = stationDAO.getAllStations();
+
+        for (Station station : stationList) {
+            List<Route> routes = routeDAO.getAllNeighborsById(station.getId());
+            List<Vertex> vertices = new ArrayList<>();
+            for (Route route : routes) {
+                vertices.add(new Vertex(route.getStationFinish().getId(), route.getDistance()));
+            }
+            g.addVertex(station.getId(), vertices);
         }
 
+        List<Integer> result = g.getShortestPath(start, finish);
 
-        Graph.calculateShortestPathFromSource(graph, stationStart);
-        stationFinish.getShortestPath().add(stationFinish);
-        System.out.println(stationFinish.getShortestPath());
-        List<Station> stationsResult = stationFinish.getShortestPath();
+        StationService stationService = new StationService();
+        List<Station> stations = new ArrayList<>();
+        stations.add(stationService.getStationById(start));
+        LOGGER.info(stationService.getStationById(start));
+        for (int i = result.size() - 1; i >= 0; i--) {
+            stations.add(stationService.getStationById(result.get(i)));
+            LOGGER.info(stationService.getStationById(result.get(i)));
+        }
 
-        /*StationService stationService = new StationService();
-        for(Station station : stationsResult){
-            station = stationService.getStationById(station.getId());
-        }*/
+        BuiltRoute builtRoute = RouteService.getRouteInstructions(stations);
 
-        BuiltRoute builtRoute = RouteService.getRouteInstructions(stationsResult);
-
-
+        /*
         File xmlFile = FileUtils.createDefaultRouteFile(FileUtils.FileType.XML);
         ParserUtils.writeXml(builtRoute, xmlFile);
 
         File jsonFile = FileUtils.createDefaultRouteFile(FileUtils.FileType.JSON);
         ParserUtils.writeJson(builtRoute, jsonFile);
+        */
+
     }
 }

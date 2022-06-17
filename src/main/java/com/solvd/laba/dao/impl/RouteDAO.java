@@ -3,6 +3,7 @@ package com.solvd.laba.dao.impl;
 import com.solvd.laba.dao.connection.ConnectionPool;
 import com.solvd.laba.dao.interfaces.IRouteDAO;
 import com.solvd.laba.dao.model.Route;
+import com.solvd.laba.dao.model.Station;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +19,9 @@ public class RouteDAO implements IRouteDAO {
     private ConnectionPool pool = ConnectionPool.getInstance();
 
     private static final Logger LOGGER = LogManager.getLogger(RouteDAO.class);
+
+    private static final String GET_LIST_OF_NEIGHBOR_BY_STATION_ID = "SELECT * FROM routes WHERE station_id1 = (?)";
+
 
     @Override
     public void showAllRoutes() {
@@ -150,6 +154,38 @@ public class RouteDAO implements IRouteDAO {
             LOGGER.error(e.getMessage());
         } finally {
             if(connection != null) {
+                try {
+                    pool.releaseConnection(connection);
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return routes;
+    }
+
+    @Override
+    public List<Route> getAllNeighborsById(int id) {
+        Connection connection = pool.getConnection();
+        List<Route> routes = new ArrayList<>();
+        try (PreparedStatement pr = connection.prepareStatement(GET_LIST_OF_NEIGHBOR_BY_STATION_ID)) {
+            pr.setInt(1, id);
+            pr.execute();
+            try (ResultSet rs = pr.getResultSet()) {
+                while (rs.next()) {
+                    Route route = new Route();
+                    Station station = new Station();
+                    route.setId(rs.getInt("id"));
+                    route.setDistance(rs.getDouble("distance"));
+                    station.setId(rs.getInt("station_id2"));
+                    route.setStationFinish(station);
+                    routes.add(route);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (connection != null) {
                 try {
                     pool.releaseConnection(connection);
                 } catch (SQLException e) {
