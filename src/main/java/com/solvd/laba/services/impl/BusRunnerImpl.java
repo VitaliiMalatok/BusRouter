@@ -102,13 +102,11 @@ public class BusRunnerImpl implements IBusRunner {
 
         BuiltRoute builtRoute = RouteService.getRouteInstructions(stations);
 
-        /*
         File xmlFile = FileUtils.createDefaultRouteFile(FileUtils.FileType.XML);
         ParserUtils.writeXml(builtRoute, xmlFile);
 
         File jsonFile = FileUtils.createDefaultRouteFile(FileUtils.FileType.JSON);
         ParserUtils.writeJson(builtRoute, jsonFile);
-        */
 
     }
 }

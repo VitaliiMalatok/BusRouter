@@ -116,7 +116,6 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `BusRouterNew`;
-INSERT INTO `BusRouterNew`.`Stations` (`id`, `name`, `latitude`, `longitude`, `city`) VALUES (id, 'name', latitude, longitude, 'city');
 INSERT INTO `BusRouterNew`.`Stations` (`id`, `name`, `latitude`, `longitude`, `city`) VALUES (1, 'Railway_station', 53.8919235774, 27.5495325449, 'Minsk');
 INSERT INTO `BusRouterNew`.`Stations` (`id`, `name`, `latitude`, `longitude`, `city`) VALUES (2, 'Kirova', 53.8932602686, 27.5519371772, 'Minsk');
 INSERT INTO `BusRouterNew`.`Stations` (`id`, `name`, `latitude`, `longitude`, `city`) VALUES (3, 'Lenina', 53.900253855, 27.5579054699, 'Minsk');

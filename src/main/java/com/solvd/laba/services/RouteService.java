@@ -91,7 +91,7 @@ public class RouteService {
                     //System.out.println("Weight " + weight);
                     //System.out.println("Index " + stationIndex);
                     if (stationIndex == stations.size() - 1) {
-                        return null;
+                        return result;
                     }
                 }
                 //System.out.println("");
