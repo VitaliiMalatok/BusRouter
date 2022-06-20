@@ -318,7 +318,6 @@ COMMIT;
 START TRANSACTION;
 USE `BusRouterNew`;
 INSERT INTO `BusRouterNew`.`Stations_have_Buses` (`id`, `Stations_id`, `Buses_id`) VALUES ('1', 1, 1);
-INSERT INTO `BusRouterNew`.`Stations_have_Buses` (`id`, `Stations_id`, `Buses_id`) VALUES ('2', 1, 10);
 INSERT INTO `BusRouterNew`.`Stations_have_Buses` (`id`, `Stations_id`, `Buses_id`) VALUES ('3', 2, 1);
 INSERT INTO `BusRouterNew`.`Stations_have_Buses` (`id`, `Stations_id`, `Buses_id`) VALUES ('4', 3, 1);
 INSERT INTO `BusRouterNew`.`Stations_have_Buses` (`id`, `Stations_id`, `Buses_id`) VALUES ('5', 3, 10);
