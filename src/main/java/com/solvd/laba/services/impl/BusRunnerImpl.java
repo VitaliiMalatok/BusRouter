@@ -52,13 +52,18 @@ public class BusRunnerImpl implements IBusRunner {
     }
 
     public static int userInputIndex(int max) {
+
         while (true) {
-            Scanner in = new Scanner(System.in);
-            int index = Integer.parseInt(in.next());
-            if (index > max || index < 1) {
-                LOGGER.info("Please enter the correct station ID (from 1 to " + max + ").");
-            } else {
-                return index;
+            try {
+                Scanner in = new Scanner(System.in);
+                int index = Integer.parseInt(in.next());
+                if (index > max || index < 1) {
+                    LOGGER.info("Please enter the correct station ID (from 1 to " + max + ").");
+                } else {
+                    return index;
+                }
+            } catch (NumberFormatException e) {
+                LOGGER.error("Incorrect input format. Try again!");
             }
         }
     }
@@ -69,13 +74,12 @@ public class BusRunnerImpl implements IBusRunner {
         for (Route route : routes) {
             fullRoutes.add(routeService.getRouteById(route.getId()));
         }
-        LOGGER.info("Data of routes have been updated.");
         return fullRoutes;
     }
 
     public static void findShortestRoute(int start, int finish) {
 
-        NewGraph g = new NewGraph();
+        Graph g = new Graph();
         StationDAO stationDAO = new StationDAO();
         RouteDAO routeDAO = new RouteDAO();
         List<Station> stationList = stationDAO.getAllStations();

@@ -1,87 +1,63 @@
 package com.solvd.laba.dao.model;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
-    private Set<Station> stations = new HashSet<>();
 
-    public void addNode(Station stationA) {
-        stations.add(stationA);
+    private final Map<Integer, List<Vertex>> vertices;
+
+    public Graph() {
+        this.vertices = new HashMap<>();
     }
 
-    public Set<Station> getStations() {
-        return stations;
+    public void addVertex(int id, List<Vertex> vertex) {
+        this.vertices.put(id, vertex);
     }
 
-    public void setStations(Set<Station> stations) {
-        this.stations = stations;
-    }
+    public List<Integer> getShortestPath(Integer start, Integer finish) {
+        final Map<Integer, Double> distances = new HashMap<>();
+        final Map<Integer, Vertex> previous = new HashMap<>();
+        PriorityQueue<Vertex> nodes = new PriorityQueue<>();
+        for (Integer vertex : vertices.keySet()) {
+            if (vertex.equals(start)) {
+                distances.put(vertex, 0.0);
+                nodes.add(new Vertex(vertex, 0.0));
+            } else {
+                distances.put(vertex, Double.MAX_VALUE);
+                nodes.add(new Vertex(vertex, Double.MAX_VALUE));
+            }
+            previous.put(vertex, null);
+        }
+        while (!nodes.isEmpty()) {
+            Vertex smallest = nodes.poll();
+            if (smallest.getId() == finish) {
+                final List<Integer> path = new ArrayList<>();
+                while (previous.get(smallest.getId()) != null) {
+                    path.add(smallest.getId());
+                    smallest = previous.get(smallest.getId());
+                }
+                return path;
+            }
+            if (distances.get(smallest.getId()) == Double.MAX_VALUE) {
+                break;
+            }
+            for (Vertex neighbor : vertices.get(smallest.getId())) {
+                Double alt = distances.get(smallest.getId()) + neighbor.getDistance();
+                if (alt < distances.get(neighbor.getId())) {
+                    distances.put(neighbor.getId(), alt);
+                    previous.put(neighbor.getId(), smallest);
 
-    public static Graph calculateShortestPathFromSource(Graph graph, Station source) {
-        source.setDistance(0.0);
-
-        Set<Station> settledStations = new HashSet<>();
-        Set<Station> unsettledStations = new HashSet<>();
-
-        unsettledStations.add(source);
-
-        while (unsettledStations.size() != 0) {
-            Station currentStation = getLowestDistanceNode(unsettledStations);
-            unsettledStations.remove(currentStation);
-            for (Entry<Station, Double> adjacencyPair:
-                    currentStation.getAdjacentNodes().entrySet()) {
-                Station adjacentStation = adjacencyPair.getKey();
-                Double edgeWeight = adjacencyPair.getValue();
-                if (!settledStations.contains(adjacentStation)) {
-                    calculateMinimumDistance(adjacentStation, edgeWeight, currentStation);
-                    unsettledStations.add(adjacentStation);
+                    for (Vertex n : nodes) {
+                        if (n.getId() == neighbor.getId()) {
+                            nodes.remove(n);
+                            n.setDistance(alt);
+                            nodes.add(n);
+                            break;
+                        }
+                    }
                 }
             }
-            settledStations.add(currentStation);
         }
-        return graph;
-
+        return new ArrayList<>(distances.keySet());
     }
-    private static void calculateMinimumDistance(Station evaluationStation, Double edgeWeigh, Station sourceStation) {
-        Double sourceDistance = sourceStation.getDistance();
-        if (sourceDistance + edgeWeigh < evaluationStation.getDistance()) {
-            evaluationStation.setDistance(sourceDistance + edgeWeigh);
-            LinkedList<Station> shortestPath = new LinkedList<>(sourceStation.getShortestPath());
-            shortestPath.add(sourceStation);
-            //shortestPath.add(evaluationStation);
-            evaluationStation.setShortestPath(shortestPath);
-
-        }
-    }
-    private static Station getLowestDistanceNode(Set<Station> unsettledStations) {
-        Station lowestDistanceStation = null;
-        Double lowestDistance = Double.MAX_VALUE;
-        for (Station station : unsettledStations) {
-            Double nodeDistance = station.getDistance();
-            if (nodeDistance < lowestDistance) {
-                lowestDistance = nodeDistance;
-                lowestDistanceStation = station;
-            }
-        }
-        return lowestDistanceStation;
-    }
-
-    public Set<Station> getNodes() {
-        return stations;
-    }
-
-    public void setNodes(Set<Station> stations) {
-        this.stations = stations;
-    }
-
-    @Override
-    public String toString() {
-        return "Graph{" +
-                "nodes=" + stations +
-                '}';
-    }
-
 }

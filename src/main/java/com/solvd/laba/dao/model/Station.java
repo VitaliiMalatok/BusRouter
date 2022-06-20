@@ -4,10 +4,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Station {
@@ -21,9 +18,6 @@ public class Station {
     private List<Bus> buses;
 
     private Bus bus = null;
-    private List<Station> shortestPath = new LinkedList<>();
-    private Double distance = Double.MAX_VALUE;
-    Map<Station, Double> adjacentNodes = new HashMap<>();
 
     public Bus getBus() {
         return bus;
@@ -31,34 +25,6 @@ public class Station {
 
     public void setBus(Bus bus) {
         this.bus = bus;
-    }
-
-    public List<Station> getShortestPath() {
-        return shortestPath;
-    }
-
-    public void setShortestPath(List<Station> shortestPath) {
-        this.shortestPath = shortestPath;
-    }
-
-    public Double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Double distance) {
-        this.distance = distance;
-    }
-
-    public Map<Station, Double> getAdjacentNodes() {
-        return adjacentNodes;
-    }
-
-    public void setAdjacentNodes(Map<Station, Double> adjacentNodes) {
-        this.adjacentNodes = adjacentNodes;
-    }
-
-    public void addDestination(Station destination, double distance) {
-        adjacentNodes.put(destination, distance);
     }
 
     public Station(){
